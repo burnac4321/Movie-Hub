@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Highly Human-like Auto Refresh Videos</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      background: #fafafa;
+      font-family: Arial, sans-serif;
+      color: #222;
+      overflow-x: hidden;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #videos-container {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      user-select: none;
+    }
+
+    .video-section {
+      border: 1px solid #ccc;
+      margin: 10px auto;
+      padding: 10px;
+      max-width: 100%;
+      width: 320px;
+      min-height: 270px;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .video-section:hover {
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+    .loading {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 12px;
+      color: #888;
+      user-select: none;
+    }
+    .status {
+      font-size: 12px;
+      color: #555;
+      margin-top: 5px;
+      font-style: italic;
+      user-select: none;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      #videos-container {
+        width: 100vw;
+        max-width: none;
+        height: calc(5 * 290px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .video-section {
+        width: 100%;
+        min-height: 270px;
+        margin: 0;
+        border-bottom: 1px solid #eee;
+        border-radius: 0;
+        padding: 8px;
+      }
+      .video-section:last-child {
+        border-bottom: none;
+      }
+      body {
+        padding: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .video-section {
+        font-size: 14px;
+        min-height: 270px;
+        padding: 6px;
+      }
+      .loading, .status {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>10 Video Sections with Advanced Human-like Behaviors</h1>
+
+<div id="videos-container"></div>
+
+<script>
+  const NUM_SECTIONS = 10;
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // --- Dynamic Name Generation ---
+  const adjectives = ["quick", "bright", "silent", "bold", "shiny", "cool", "eager", "sharp", "brave", "calm", "smart", "witty", "lucky", "cheerful", "gentle", "fancy", "jolly", "nifty", "zany", "quirky", "zesty", "wavy", "spicy", "snappy", "glossy", "fuzzy", "mellow", "silky", "breezy", "cloudy", "dizzy", "loopy", "graceful", "jumpy", "knobby", "leafy", "misty", "noisy", "oily", "plucky", "rusty", "sunny", "tidy", "vivid", "whiny", "zippy", "chirpy", "flaky", "giddy", "hasty", "icy", "juicy", "kooky", "lacy", "muddy", "nutty", "peppy", "quirky", "rosy", "soapy", "tasty", "upbeat", "vague", "wiggly", "yummy", "zesty", "bubbly", "crisp", "dandy", "earthy", "feisty", "glam", "happy", "itchy", "jazzy", "kindly", "lively", "meek", "neat", "odd", "perky", "quick", "ripe", "sassy", "tidy", "ugly", "vast", "witty", "young", "zany", "zippy", "zesty", "zealous", "zen", "zoned", "zoomy", "zappy"];
+
+  const nouns = ["river", "mountain", "forest", "breeze", "cloud", "stone", "tree", "flower", "meadow", "stream", "hill", "beach", "ocean", "sun", "moon", "star", "planet", "comet", "galaxy", "storm", "rain", "snow", "wind", "fog", "thunder", "lightning", "leaf", "branch", "bark", "seed", "bud", "blossom", "petal", "thorn", "root", "trunk", "boulder", "pebble", "cliff", "canyon", "valley", "glacier", "volcano", "island", "lagoon", "bay", "cape", "reef", "wave", "current", "whirlpool", "tide", "shore", "coast", "harbor", "dock", "port", "boat", "ship", "raft", "canoe", "kayak", "sail", "anchor", "mast", "hull", "deck", "cabin", "crew", "captain", "sailor", "navigator", "pilot", "cloud", "gust", "drizzle", "downpour", "mist", "hail", "frost", "iceberg", "snowflake", "blizzard", "gust", "storm", "cyclone", "typhoon", "tsunami", "quake", "eruption", "lava", "ash", "crater", "ridge", "plateau", "basin", "delta"];
+
+  const usedNames = new Set();
+
+  function generateUniqueName() {
+    let name;
+    let tries = 0;
+    do {
+      const adj = adjectives[randInt(0, adjectives.length - 1)];
+      const noun = nouns[randInt(0, nouns.length - 1)];
+      name = `${adj}-${noun}`;
+      tries++;
+    } while (usedNames.has(name) && tries < 1000);
+    usedNames.add(name);
+    return name;
+  }
+
+  function runVideoScript(sectionId, name) {
+    const container = document.getElementById(`section-${sectionId}`);
+    container.innerHTML = '';
+
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.textContent = name;
+    container.appendChild(title);
+
+    const loading = document.createElement('div');
+    loading.className = 'loading';
+    loading.textContent = 'Loading...';
+    container.appendChild(loading);
+
+    const reactionDelay = randInt(300, 1200);
+    setTimeout(() => {
+      loading.textContent = 'Buffering video...';
+      const bufferingDelay = randInt(500, 1500);
+      setTimeout(() => {
+        loading.remove();
+
+        const atOptionsScript = document.createElement('script');
+        atOptionsScript.type = 'text/javascript';
+        atOptionsScript.text = `
+          atOptions = {
+            'key' : 'a4bb8247d7752eb7bd997d5e1ad49d54',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+          };
+        `;
+
+        const invokeScript = document.createElement('script');
+        invokeScript.type = 'text/javascript';
+        invokeScript.src = "//grilledrationally.com/a4bb8247d7752eb7bd997d5e1ad49d54/invoke.js";
+
+        container.appendChild(atOptionsScript);
+        container.appendChild(invokeScript);
+
+        const nextReload = randInt(2000, 5000);
+        const nextReloadInfo = document.createElement('div');
+        nextReloadInfo.className = 'status';
+        nextReloadInfo.textContent = `Next reload in ${(nextReload / 1000).toFixed(1)} seconds`;
+        container.appendChild(nextReloadInfo);
+
+        setTimeout(() => {
+          runVideoScript(sectionId, name);
+        }, nextReload);
+
+      }, bufferingDelay);
+    }, reactionDelay);
+  }
+
+  const videosContainer = document.getElementById('videos-container');
+  for(let i = 1; i <= NUM_SECTIONS; i++) {
+    const sectionDiv = document.createElement('div');
+    sectionDiv.id = `section-${i}`;
+    sectionDiv.className = 'video-section';
+    videosContainer.appendChild(sectionDiv);
+
+    const sectionName = generateUniqueName();
+    runVideoScript(i, sectionName);
+  }
+</script>
+
+</body>
+</html>
